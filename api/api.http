@@ -1,0 +1,29 @@
+POST http://localhost:8080/todos
+Content-Type: application/json
+
+{
+  "title": "Estudar Flutter",
+  "description": "Documentação sobre custom painter"
+}
+
+###
+
+GET http://localhost:8080/todos
+
+###
+GET http://localhost:8080/todos/1
+
+###
+
+PUT http://localhost:8080/todos/1
+Content-Type: application/json
+
+{
+  "title": "Estudar GoLang",
+  "description": "Ler Documentação sobre GO"
+}
+
+###
+
+DELETE http://localhost:8080/todos/1
+
