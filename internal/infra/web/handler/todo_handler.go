@@ -2,9 +2,7 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/evandersondev/test-golang-todo-list/internal/dto"
 	"github.com/evandersondev/test-golang-todo-list/internal/usecase"
@@ -67,14 +65,9 @@ func (h *TodoHandler) FindAllTodosHandler() http.HandlerFunc {
 
 func (h *TodoHandler) FindTodoByIdHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		idString := r.PathValue("id")
-		if idString == "" {
+		id := r.PathValue("id")
+		if id == "" {
 			http.Error(w, "ID parameter is missing", http.StatusBadRequest)
-			return
-		}
-		id, err := strconv.Atoi(idString)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Invalid number format: %s", err), http.StatusBadRequest)
 			return
 		}
 		todo, err := h.findTodoById.Execute(id)
@@ -89,20 +82,15 @@ func (h *TodoHandler) FindTodoByIdHandler() http.HandlerFunc {
 
 func (h *TodoHandler) UpdateTodoHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		idString := r.PathValue("id")
-		if idString == "" {
+		id := r.PathValue("id")
+		if id == "" {
 			http.Error(w, "ID parameter is missing", http.StatusBadRequest)
-			return
-		}
-		id, err := strconv.Atoi(idString)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Invalid number format: %s", err), http.StatusBadRequest)
 			return
 		}
 		body := r.Body
 		defer body.Close()
 		dto := dto.UpdateTodoDTO{}
-		err = json.NewDecoder(body).Decode(&dto)
+		err := json.NewDecoder(body).Decode(&dto)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -119,17 +107,12 @@ func (h *TodoHandler) UpdateTodoHandler() http.HandlerFunc {
 
 func (h *TodoHandler) DeleteTodoHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		idString := r.PathValue("id")
-		if idString == "" {
+		id := r.PathValue("id")
+		if id == "" {
 			http.Error(w, "ID parameter is missing", http.StatusBadRequest)
 			return
 		}
-		id, err := strconv.Atoi(idString)
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Invalid number format: %s", err), http.StatusBadRequest)
-			return
-		}
-		err = h.deleteTodo.Execute(id)
+		err := h.deleteTodo.Execute(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

@@ -12,7 +12,7 @@ func NewDeleteTodo(repository *repository.TodoRepository) *DeleteTodo {
 	}
 }
 
-func (uc *DeleteTodo) Execute(id int) error {
+func (uc *DeleteTodo) Execute(id string) error {
 	err := uc.repository.Delete(id)
 	if err != nil {
 		return err

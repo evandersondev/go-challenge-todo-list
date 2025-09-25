@@ -16,7 +16,7 @@ func NewUpdateTodo(repository repository.TodoRepositoryInterface) *UpdateTodo {
 	}
 }
 
-func (uc *UpdateTodo) Execute(id int, dto dto.UpdateTodoDTO) (*entity.Todo, error) {
+func (uc *UpdateTodo) Execute(id string, dto dto.UpdateTodoDTO) (*entity.Todo, error) {
 	todo, err := uc.repository.Update(id, dto)
 	if err != nil {
 		return &entity.Todo{}, err

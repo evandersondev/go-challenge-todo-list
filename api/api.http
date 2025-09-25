@@ -11,19 +11,20 @@ Content-Type: application/json
 GET http://localhost:8080/todos
 
 ###
-GET http://localhost:8080/todos/1
+GET http://localhost:8080/todos/b575f812-c33b-488b-900b-088d48afee4a
 
 ###
 
-PUT http://localhost:8080/todos/1
+PUT http://localhost:8080/todos/b575f812-c33b-488b-900b-088d48afee4a
 Content-Type: application/json
 
 {
-  "title": "Estudar GoLang",
-  "description": "Ler Documentação sobre GO"
+  "title": "Estudar Golang",
+  "description": "Ler Documentação sobre GO",
+  "done": true
 }
 
 ###
 
-DELETE http://localhost:8080/todos/1
+DELETE http://localhost:8080/todos/b575f812-c33b-488b-900b-088d48afee4a
 

@@ -1,23 +1,25 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
 
+	"github.com/evandersondev/test-golang-todo-list/internal/db"
 	"github.com/evandersondev/test-golang-todo-list/internal/infra/web/factory"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-// db.Exec("CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, done BOOLEAN, created_at DATETIME)")
-
 func main() {
-	db, err := sql.Open("sqlite3", "./todo.db")
+	ctx := context.Background()
+	dbc, err := sql.Open("mysql", "root:root@tcp(localhost:3307)/mydb?parseTime=true")
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
-	todoHanlder := factory.MakeTodoHandler(db)
+	defer dbc.Close()
+	queries := db.New(dbc)
+	todoHanlder := factory.MakeTodoHandler(ctx, queries)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /todos", todoHanlder.CreateTodoHandler())

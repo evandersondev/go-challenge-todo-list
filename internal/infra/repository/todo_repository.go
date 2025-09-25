@@ -1,34 +1,42 @@
 package repository
 
 import (
-	"database/sql"
+	"context"
 
+	"github.com/evandersondev/test-golang-todo-list/internal/db"
 	"github.com/evandersondev/test-golang-todo-list/internal/dto"
 	"github.com/evandersondev/test-golang-todo-list/internal/entity"
+	"github.com/google/uuid"
 )
 
 type TodoRepositoryInterface interface {
 	Create(todo entity.Todo) error
 	FindAll() ([]entity.Todo, error)
-	FindById(id int) (*entity.Todo, error)
-	Update(id int, dto dto.UpdateTodoDTO) (*entity.Todo, error)
-	Delete(id int) error
+	FindById(id string) (*entity.Todo, error)
+	Update(id string, dto dto.UpdateTodoDTO) (*entity.Todo, error)
+	Delete(id string) error
 }
 
 var _ TodoRepositoryInterface = &TodoRepository{}
 
 type TodoRepository struct {
-	DB *sql.DB
+	db  *db.Queries
+	ctx context.Context
 }
 
-func NewTodoRepository(db *sql.DB) *TodoRepository {
+func NewTodoRepository(ctx context.Context, db *db.Queries) *TodoRepository {
 	return &TodoRepository{
-		DB: db,
+		ctx: ctx,
+		db:  db,
 	}
 }
 
 func (r *TodoRepository) Create(todo entity.Todo) error {
-	_, err := r.DB.Exec("INSERT INTO todos (title, description, done, created_at) VALUES (?, ?, ?, ?)", todo.Title, todo.Description, todo.Done, todo.CreatedAt)
+	err := r.db.CreateTodo(r.ctx, db.CreateTodoParams{
+		ID:          uuid.New().String(),
+		Title:       todo.Title,
+		Description: todo.Description,
+	})
 	if err != nil {
 		return err
 	}
@@ -36,52 +44,56 @@ func (r *TodoRepository) Create(todo entity.Todo) error {
 }
 
 func (r *TodoRepository) FindAll() ([]entity.Todo, error) {
-	rows, err := r.DB.Query("SELECT * FROM todos")
+	rows, err := r.db.ListTodos(r.ctx)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-
-	var todos []entity.Todo
-	for rows.Next() {
-		var todo entity.Todo
-		err := rows.Scan(&todo.ID, &todo.Title, &todo.Description, &todo.Done, &todo.CreatedAt)
-		if err != nil {
-			return nil, err
-		}
-		todos = append(todos, todo)
+	todos := make([]entity.Todo, 0, len(rows))
+	for _, row := range rows {
+		todos = append(todos, entity.Todo{
+			ID:          string(row.ID),
+			Title:       row.Title,
+			Description: row.Description,
+			Done:        row.Done,
+			CreatedAt:   row.CreatedAt,
+		})
 	}
 	return todos, nil
 }
 
-func (r *TodoRepository) FindById(id int) (*entity.Todo, error) {
-	var todo entity.Todo
-	err := r.DB.QueryRow("SELECT id, title, description, done, created_at FROM todos WHERE id = ?", id).Scan(&todo.ID, &todo.Title, &todo.Description, &todo.Done, &todo.CreatedAt)
+func (r *TodoRepository) FindById(id string) (*entity.Todo, error) {
+	row, err := r.db.GetTodo(r.ctx, id)
 	if err != nil {
 		return &entity.Todo{}, err
 	}
-	return &todo, nil
+	return &entity.Todo{
+		ID:          string(row.ID),
+		Title:       row.Title,
+		Description: row.Description,
+		Done:        row.Done,
+		CreatedAt:   row.CreatedAt,
+	}, nil
 }
 
-func (r *TodoRepository) Update(id int, dto dto.UpdateTodoDTO) (*entity.Todo, error) {
-	rows, err := r.DB.Exec("UPDATE todos SET title = ?, description = ?, done = ? WHERE id = ?", dto.Title, dto.Description, dto.Done, id)
+func (r *TodoRepository) Update(id string, dto dto.UpdateTodoDTO) (*entity.Todo, error) {
+	err := r.db.UpdateTodo(r.ctx, db.UpdateTodoParams{
+		ID:          id,
+		Title:       dto.Title,
+		Description: dto.Description,
+		Done:        dto.Done,
+	})
 	if err != nil {
-		return &entity.Todo{}, err
-	}
-	affectedRows, err := rows.RowsAffected()
-	if err != nil || affectedRows == 0 {
 		return &entity.Todo{}, err
 	}
 	todo, err := r.FindById(id)
 	if err != nil {
 		return &entity.Todo{}, err
 	}
-
 	return todo, nil
 }
 
-func (r *TodoRepository) Delete(id int) error {
-	err := r.DB.QueryRow("DELETE FROM todos WHERE id = ?", id).Err()
+func (r *TodoRepository) Delete(id string) error {
+	err := r.db.DeleteTodo(r.ctx, id)
 	if err != nil {
 		return err
 	}

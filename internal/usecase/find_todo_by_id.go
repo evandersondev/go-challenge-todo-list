@@ -15,7 +15,7 @@ func NewFindTodoById(repository repository.TodoRepositoryInterface) *FindTodoByI
 	}
 }
 
-func (uc *FindTodoById) Execute(id int) (*entity.Todo, error) {
+func (uc *FindTodoById) Execute(id string) (*entity.Todo, error) {
 	todo, err := uc.repository.FindById(id)
 	if err != nil {
 		return nil, err
