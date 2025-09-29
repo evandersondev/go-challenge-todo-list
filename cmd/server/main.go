@@ -6,14 +6,19 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/evandersondev/test-golang-todo-list/configs"
 	"github.com/evandersondev/test-golang-todo-list/internal/db"
 	"github.com/evandersondev/test-golang-todo-list/internal/infra/web/factory"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
+	config, err := configs.LoadConfig(".")
+	if err != nil {
+		panic(err)
+	}
 	ctx := context.Background()
-	dbc, err := sql.Open("mysql", "root:root@tcp(localhost:3307)/mydb?parseTime=true")
+	dbc, err := sql.Open(config.DBDriver, config.DBUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -29,5 +34,5 @@ func main() {
 	mux.HandleFunc("DELETE /todos/{id}", todoHanlder.DeleteTodoHandler())
 
 	fmt.Println("Server is running on port 8080")
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe(":"+config.WebServerPort, mux)
 }

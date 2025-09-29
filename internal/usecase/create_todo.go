@@ -17,15 +17,14 @@ func NewCreateTodoUseCase(repository repository.TodoRepositoryInterface) *Create
 }
 
 func (uc *CreateTodoUseCase) Execute(dto dto.CreateTodoDTO) (*entity.Todo, error) {
-	todo := entity.NewTodo(dto.Title, dto.Description)
-
-	if !todo.IsValid() {
-		return &entity.Todo{}, nil
+	todo, err := entity.NewTodo(dto.Title, dto.Description)
+	if err != nil {
+		return nil, err
 	}
 
-	err := uc.repository.Create(*todo)
+	err = uc.repository.Create(*todo)
 	if err != nil {
-		return &entity.Todo{}, err
+		return nil, err
 	}
 
 	return todo, nil

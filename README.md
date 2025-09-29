@@ -5,6 +5,32 @@
 Construir uma API RESTful em Go que gerencie uma lista de tarefas (To-Do List).
 O candidato deve implementar endpoints básicos, lidar com persistência e aplicar boas práticas de código.
 
+<br>
+<br>
+
+## 🚀 Running
+
+1. Run docker compose
+
+```shell
+docker compose up -d
+```
+
+2. Execute migrations
+
+```shell
+make migration-up
+```
+
+3. Run main.go
+
+```shell
+cd cmd/server && go run main.go
+```
+
+<br>
+<br>
+
 ## ⚙️ Requisitos Obrigatórios
 
 1. CRUD de Tarefas
@@ -41,6 +67,9 @@ Cada tarefa deve ter os seguintes campos:
    - Utilizar context onde for necessário.
    - Retornar respostas em JSON com status HTTP adequado.
 
+<br>
+<br>
+
 ## 🔥 Diferenciais (opcionais, mas contam pontos extras)
 
     - Implementar testes unitários ou de integração.
@@ -48,6 +77,9 @@ Cada tarefa deve ter os seguintes campos:
     - Utilizar Docker para subir o projeto.
     - Implementar paginação na listagem de tarefas.
     - Adicionar autenticação simples (ex: JWT ou token estático).
+
+<br>
+<br>
 
 ## 📡 Endpoints Esperados
 
@@ -58,6 +90,9 @@ Cada tarefa deve ter os seguintes campos:
 | GET    | `/tasks/{id}` | Buscar uma tarefa por ID       |
 | PUT    | `/tasks/{id}` | Atualizar uma tarefa existente |
 | DELETE | `/tasks/{id}` | Remover uma tarefa             |
+
+<br>
+<br>
 
 ## 📦 Entrega
 

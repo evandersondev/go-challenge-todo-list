@@ -13,7 +13,7 @@ type TodoHandler struct {
 	findAllUseCase    *usecase.FindAllUseCase
 	findTodoById      *usecase.FindTodoById
 	updateTodo        *usecase.UpdateTodo
-	deleteTodo        *usecase.DeleteTodo
+	deleteTodoUseCase *usecase.DeleteTodoUseCase
 }
 
 func NewTodoHandler(
@@ -21,14 +21,14 @@ func NewTodoHandler(
 	findAllUseCase *usecase.FindAllUseCase,
 	findTodoById *usecase.FindTodoById,
 	updateTodo *usecase.UpdateTodo,
-	deleteTodo *usecase.DeleteTodo,
+	deleteTodoUseCase *usecase.DeleteTodoUseCase,
 ) *TodoHandler {
 	return &TodoHandler{
 		createTodoUsecase: createTodoUsecase,
 		findAllUseCase:    findAllUseCase,
 		findTodoById:      findTodoById,
 		updateTodo:        updateTodo,
-		deleteTodo:        deleteTodo,
+		deleteTodoUseCase: deleteTodoUseCase,
 	}
 }
 
@@ -112,7 +112,7 @@ func (h *TodoHandler) DeleteTodoHandler() http.HandlerFunc {
 			http.Error(w, "ID parameter is missing", http.StatusBadRequest)
 			return
 		}
-		err := h.deleteTodo.Execute(id)
+		err := h.deleteTodoUseCase.Execute(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
