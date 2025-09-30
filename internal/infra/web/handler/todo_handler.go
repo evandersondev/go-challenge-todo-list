@@ -12,7 +12,7 @@ type TodoHandler struct {
 	createTodoUsecase *usecase.CreateTodoUseCase
 	findAllUseCase    *usecase.FindAllUseCase
 	findTodoById      *usecase.FindTodoById
-	updateTodo        *usecase.UpdateTodo
+	updateTodoUseCase *usecase.UpdateTodoUseCase
 	deleteTodoUseCase *usecase.DeleteTodoUseCase
 }
 
@@ -20,14 +20,14 @@ func NewTodoHandler(
 	createTodoUsecase *usecase.CreateTodoUseCase,
 	findAllUseCase *usecase.FindAllUseCase,
 	findTodoById *usecase.FindTodoById,
-	updateTodo *usecase.UpdateTodo,
+	updateTodoUseCase *usecase.UpdateTodoUseCase,
 	deleteTodoUseCase *usecase.DeleteTodoUseCase,
 ) *TodoHandler {
 	return &TodoHandler{
 		createTodoUsecase: createTodoUsecase,
 		findAllUseCase:    findAllUseCase,
 		findTodoById:      findTodoById,
-		updateTodo:        updateTodo,
+		updateTodoUseCase: updateTodoUseCase,
 		deleteTodoUseCase: deleteTodoUseCase,
 	}
 }
@@ -95,7 +95,7 @@ func (h *TodoHandler) UpdateTodoHandler() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		todo, err := h.updateTodo.Execute(id, dto)
+		todo, err := h.updateTodoUseCase.Execute(id, dto)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

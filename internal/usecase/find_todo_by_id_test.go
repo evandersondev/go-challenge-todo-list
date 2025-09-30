@@ -15,12 +15,31 @@ func TestNewFindTodoById(t *testing.T) {
 
 func TestNewFindTodoById_Execute_Success(t *testing.T) {
 	repository := &TodoRepositoryMock{}
-	repository.On("FindById", "1").Return(entity.Todo{}, nil)
+	expectedTodo := &entity.Todo{
+		ID:          "1",
+		Title:       "Test Title",
+		Description: "Test Description",
+		Done:        false,
+	}
+
+	repository.On("FindById", "1").Return(expectedTodo, nil)
 	sut := NewFindTodoById(repository)
 
-	_, _ = sut.repository.FindById("1")
+	todo, err := sut.Execute("1")
 
-	// assert.Error(t, err)
-	// assert.NotNil(t, todo)
-	// repository.AssertExpectations(t)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedTodo, todo)
+	repository.AssertExpectations(t)
+}
+
+func TestNewFindTodoById_Execute_Error(t *testing.T) {
+	repository := &TodoRepositoryMock{}
+	repository.On("FindById", "invalid-id").Return(nil, assert.AnError)
+	sut := NewFindTodoById(repository)
+
+	todo, err := sut.Execute("invalid-id")
+
+	assert.Error(t, err)
+	assert.Nil(t, todo)
+	repository.AssertExpectations(t)
 }

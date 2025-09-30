@@ -15,8 +15,14 @@ func MakeTodoHandler(ctx context.Context, db *db.Queries) *handler.TodoHandler {
 	createTodoUsecase := usecase.NewCreateTodoUseCase(repository)
 	findAllUseCase := usecase.NewFindAllUseCase(repository)
 	findTodoById := usecase.NewFindTodoById(repository)
-	updateTodo := usecase.NewUpdateTodo(repository)
-	deleteTodo := usecase.NewDeleteTodoUseCase(repository)
+	updateTodoUseCase := usecase.NewUpdateTodoUseCase(repository)
+	deleteTodoUseCase := usecase.NewDeleteTodoUseCase(repository)
 
-	return handler.NewTodoHandler(createTodoUsecase, findAllUseCase, findTodoById, updateTodo, deleteTodo)
+	return handler.NewTodoHandler(
+		createTodoUsecase,
+		findAllUseCase,
+		findTodoById,
+		updateTodoUseCase,
+		deleteTodoUseCase,
+	)
 }

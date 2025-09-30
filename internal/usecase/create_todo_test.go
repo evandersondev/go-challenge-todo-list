@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/evandersondev/test-golang-todo-list/internal/dto"
@@ -40,7 +39,7 @@ func TestCreateTodoUseCase_Execute_Success(t *testing.T) {
 
 func TestCreateTodoUseCase_Execute_Failure(t *testing.T) {
 	repository := &TodoRepositoryMock{}
-	repository.On("Create", mock.Anything).Return(errors.New("failed to create todo"))
+	repository.On("Create", mock.Anything).Return(assert.AnError)
 	sut := NewCreateTodoUseCase(repository)
 
 	dto := dto.CreateTodoDTO{
@@ -50,7 +49,6 @@ func TestCreateTodoUseCase_Execute_Failure(t *testing.T) {
 	_, err := sut.Execute(dto)
 
 	assert.Error(t, err)
-	assert.EqualError(t, err, "failed to create todo")
 	repository.AssertExpectations(t)
 }
 

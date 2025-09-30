@@ -64,7 +64,7 @@ func (r *TodoRepository) FindAll() ([]entity.Todo, error) {
 func (r *TodoRepository) FindById(id string) (*entity.Todo, error) {
 	row, err := r.db.GetTodo(r.ctx, id)
 	if err != nil {
-		return &entity.Todo{}, err
+		return nil, err
 	}
 	return &entity.Todo{
 		ID:          string(row.ID),

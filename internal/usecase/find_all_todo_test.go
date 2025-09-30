@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/evandersondev/test-golang-todo-list/internal/entity"
@@ -28,7 +27,7 @@ func TestFindAllUseCase_Execute_Success(t *testing.T) {
 
 func TestFindAllUseCase_Execute_Failure(t *testing.T) {
 	repository := &TodoRepositoryMock{}
-	repository.On("FindAll").Return([]entity.Todo{}, errors.New("failed to find todos")).Once()
+	repository.On("FindAll").Return([]entity.Todo{}, assert.AnError).Once()
 	sut := NewFindAllUseCase(repository)
 
 	todos, err := sut.Execute()

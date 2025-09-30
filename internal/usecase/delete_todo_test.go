@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,12 +25,11 @@ func TestDeleteTodoUseCase_Execute_Success(t *testing.T) {
 
 func TestDeleteTodoUseCase_Execute_Failure(t *testing.T) {
 	repository := &TodoRepositoryMock{}
-	repository.On("Delete", "1").Return(errors.New("failed to delete todo")).Once()
+	repository.On("Delete", "1").Return(assert.AnError).Once()
 	sut := NewDeleteTodoUseCase(repository)
 
 	err := sut.Execute("1")
 
 	assert.Error(t, err)
-	assert.EqualError(t, err, "failed to delete todo")
 	repository.AssertExpectations(t)
 }

@@ -22,11 +22,17 @@ func (m *TodoRepositoryMock) FindAll() ([]entity.Todo, error) {
 
 func (m *TodoRepositoryMock) FindById(id string) (*entity.Todo, error) {
 	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*entity.Todo), args.Error(1)
 }
 
 func (m *TodoRepositoryMock) Update(id string, dto dto.UpdateTodoDTO) (*entity.Todo, error) {
 	args := m.Called(id, dto)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*entity.Todo), args.Error(1)
 }
 
