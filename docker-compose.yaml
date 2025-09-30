@@ -1,12 +1,11 @@
 services:
   goapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     ports:
       - "8080:8080"
     depends_on:
       - mysql
+
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -17,3 +16,22 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mydb
       MYSQL_PASSWORD: root
+
+  migrate:
+    image: migrate/migrate
+    restart: on-failure
+    depends_on:
+      - mysql
+    volumes:
+      - ./sql/migrations:/migrations
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "/migrations",
+        "-database",
+        "mysql://root:root@tcp(mysql:3306)/mydb",
+        "up",
+      ]
+    networks:
+      - default

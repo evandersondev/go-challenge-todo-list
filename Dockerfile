@@ -1,10 +1,11 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:latest AS builder
 WORKDIR /app
-COPY go.mod .
-COPY go.sum .
-COPY . .
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+COPY . ./
 
-RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o server ./cmd/server/
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o server ./cmd/server/
 
 FROM scratch
 WORKDIR /root/

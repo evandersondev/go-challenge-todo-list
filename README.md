@@ -31,6 +31,15 @@ cd cmd/server && go run main.go
 <br>
 <br>
 
+## 🚀 Build
+
+```shell
+docker compose up --build
+```
+
+<br>
+<br>
+
 ## ⚙️ Requisitos Obrigatórios
 
 1. CRUD de Tarefas
